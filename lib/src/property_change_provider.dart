@@ -24,7 +24,8 @@ import 'package:property_change_notifier/property_change_notifier.dart';
 /// ```dart
 /// final model = PropertyChangeProvider.of<MyModel>(context, listen: false).value;
 /// ```
-class PropertyChangeProvider<T extends PropertyChangeNotifier> extends StatefulWidget {
+class PropertyChangeProvider<T extends PropertyChangeNotifier?>
+    extends StatefulWidget {
   /// Retrieves the [PropertyChangeModel] from the nearest ancestor [PropertyChangeProvider].
   /// If [listen] is true (which is the default), the calling widget will also be rebuilt
   /// whenever the ancestor's [PropertyChangeNotifier] model changes. To only rebuild
@@ -32,37 +33,44 @@ class PropertyChangeProvider<T extends PropertyChangeNotifier> extends StatefulW
   /// If [listen] is false, the [properties] parameter must be null or empty.
   static PropertyChangeModel<T> of<T extends PropertyChangeNotifier>(
     BuildContext context, {
-    Iterable<Object> properties,
+    Iterable<Object>? properties,
     bool listen = true,
   }) {
-    assert(listen || properties == null, "Don't provide properties if you're not going to listen to them.");
+    assert(listen || properties == null,
+        "Don't provide properties if you're not going to listen to them.");
 
     PropertyChangeModel<T> nullCheck(PropertyChangeModel<T> model) {
-      assert(model != null, 'Could not find an ancestor PropertyChangeProvider<$T>');
+      assert(model != null,
+          'Could not find an ancestor PropertyChangeProvider<$T>');
       return model;
-    };
+    }
+
+    ;
 
     if (!listen) {
-      return nullCheck(context.findAncestorWidgetOfExactType<PropertyChangeModel<T>>());
+      return nullCheck(
+          context.findAncestorWidgetOfExactType<PropertyChangeModel<T>>()!);
     }
 
     if (properties == null || properties.isEmpty) {
-      return nullCheck(InheritedModel.inheritFrom<PropertyChangeModel<T>>(context));
+      return nullCheck(
+          InheritedModel.inheritFrom<PropertyChangeModel<T>>(context)!);
     }
 
-    PropertyChangeModel<T> widget;
+    PropertyChangeModel<T>? widget;
     for (final property in properties) {
-      widget = InheritedModel.inheritFrom<PropertyChangeModel<T>>(context, aspect: property);
+      widget = InheritedModel.inheritFrom<PropertyChangeModel<T>>(context,
+          aspect: property);
     }
 
-    return nullCheck(widget);
+    return nullCheck(widget!);
   }
 
   /// Creates a [PropertyChangeProvider] that can be accessed by descendant widgets.
   const PropertyChangeProvider({
-    Key key,
-    @required this.value,
-    @required this.child,
+    Key? key,
+    required this.value,
+    required this.child,
   })  : assert(value != null),
         assert(child != null),
         super(key: key);
@@ -76,25 +84,27 @@ class PropertyChangeProvider<T extends PropertyChangeNotifier> extends StatefulW
   final Widget child;
 
   @override
-  _PropertyChangeProviderState createState() => _PropertyChangeProviderState<T>();
+  _PropertyChangeProviderState createState() =>
+      _PropertyChangeProviderState<T>();
 }
 
 /// The companion [State] object to [PropertyChangeProvider]. For private use only.
 /// Subscribes as a global listener to the [PropertyChangeNotifier] instance at [widget].[value].
 /// Rebuilds whenever a property is changed and creates a new [PropertyChangeModel] with a reference
 /// to itself so it can access the original model instance and changed property names.
-class _PropertyChangeProviderState<T extends PropertyChangeNotifier> extends State<PropertyChangeProvider<T>> {
+class _PropertyChangeProviderState<T extends PropertyChangeNotifier?>
+    extends State<PropertyChangeProvider<T>> {
   Set<Object> _properties = {};
 
   @override
   void initState() {
     super.initState();
-    widget.value.addListener(_listener);
+    widget.value?.addListener(_listener);
   }
 
   @override
   void dispose() {
-    widget.value.removeListener(_listener);
+    widget.value?.removeListener(_listener);
     super.dispose();
   }
 
@@ -127,21 +137,22 @@ class _PropertyChangeProviderState<T extends PropertyChangeNotifier> extends Sta
 /// names of the changed properties intersect with the list of properties provided
 /// to the [PropertyChangeProvider].[of] method.
 /// The type parameter [T] is the type of the [PropertyChangeNotifier] subclass.
-class PropertyChangeModel<T extends PropertyChangeNotifier> extends InheritedModel {
-  final _PropertyChangeProviderState<T> _state;
+class PropertyChangeModel<T extends PropertyChangeNotifier?>
+    extends InheritedModel<T> {
+  final _PropertyChangeProviderState<T>? _state;
 
   const PropertyChangeModel({
-    Key key,
-    _PropertyChangeProviderState<T> state,
-    Widget child,
+    Key? key,
+    _PropertyChangeProviderState<T>? state,
+    required Widget child,
   })  : _state = state,
         super(key: key, child: child);
 
   /// The instance of [T] originally provided to the [PropertyChangeProvider] constructor.
-  T get value => _state.widget.value;
+  T get value => _state!.widget.value;
 
   /// The names of the properties on the [value] instance that were changed in the current build frame.
-  Set<Object> get properties => _state._properties;
+  Set<Object> get properties => _state!._properties;
 
   @override
   bool updateShouldNotify(PropertyChangeModel oldWidget) {
@@ -149,7 +160,7 @@ class PropertyChangeModel<T extends PropertyChangeNotifier> extends InheritedMod
   }
 
   @override
-  bool updateShouldNotifyDependent(PropertyChangeModel<T> oldWidget, Set<Object> aspects) {
-    return aspects.intersection(_state._properties).isNotEmpty;
+  bool updateShouldNotifyDependent(oldWidget, aspects) {
+    return aspects.intersection(_state!._properties).isNotEmpty;
   }
 }

@@ -20,7 +20,7 @@ void main() {
       final widget = Builder(builder: (context) {
         return PropertyChangeProvider(
           value: PropertyChangeNotifier(),
-          child: null,
+          child: Container(),
         );
       });
       await tester.pumpWidget(widget);
@@ -41,7 +41,8 @@ void main() {
       expect(tester.takeException(), isAssertionError);
     });
 
-    testWidgets('listens to first ancestor provider of same type', (tester) async {
+    testWidgets('listens to first ancestor provider of same type',
+        (tester) async {
       final outerModel = PropertyChangeNotifier();
       final innerModel = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 2);
@@ -63,7 +64,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('does not listen to last ancestor provider of same type', (tester) async {
+    testWidgets('does not listen to last ancestor provider of same type',
+        (tester) async {
       final outerModel = PropertyChangeNotifier();
       final innerModel = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 1);
@@ -85,7 +87,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('listens to first ancestor provider of correct type', (tester) async {
+    testWidgets('listens to first ancestor provider of correct type',
+        (tester) async {
       final outerModel = MyModel();
       final innerModel = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 2);
@@ -107,7 +110,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('does not listen to first ancestor provider of wrong type', (tester) async {
+    testWidgets('does not listen to first ancestor provider of wrong type',
+        (tester) async {
       final outerModel = MyModel();
       final innerModel = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 1);
@@ -131,7 +135,9 @@ void main() {
   });
 
   group('Non-dependent', () {
-    testWidgets('does not rebuild when notifyListeners() is called with no property', (tester) async {
+    testWidgets(
+        'does not rebuild when notifyListeners() is called with no property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 1);
       final widget = PropertyChangeProvider(
@@ -144,7 +150,9 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('does not rebuild when notifyListeners() is called with a property', (tester) async {
+    testWidgets(
+        'does not rebuild when notifyListeners() is called with a property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 1);
       final widget = PropertyChangeProvider(
@@ -159,14 +167,17 @@ void main() {
   });
 
   group('Dependent without properties', () {
-    testWidgets('empty properties rebuilds when empty notifyListeners() is called', (tester) async {
+    testWidgets(
+        'empty properties rebuilds when empty notifyListeners() is called',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 2);
       final widget = PropertyChangeProvider(
         value: model,
         child: Builder(
           builder: (context) {
-            PropertyChangeProvider.of<PropertyChangeNotifier>(context, properties: []);
+            PropertyChangeProvider.of<PropertyChangeNotifier>(context,
+                properties: []);
             return BuildDetector(listener);
           },
         ),
@@ -177,7 +188,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('rebuilds when notifyListeners() is called with no property', (tester) async {
+    testWidgets('rebuilds when notifyListeners() is called with no property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 2);
       final widget = PropertyChangeProvider(
@@ -195,7 +207,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('rebuilds when notifyListeners() is called with a property', (tester) async {
+    testWidgets('rebuilds when notifyListeners() is called with a property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 2);
       final widget = PropertyChangeProvider(
@@ -213,7 +226,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('does not rebuild when listen is false and notifyListeners() is called with no property',
+    testWidgets(
+        'does not rebuild when listen is false and notifyListeners() is called with no property',
         (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 1);
@@ -221,7 +235,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            PropertyChangeProvider.of<PropertyChangeNotifier>(context, listen: false);
+            PropertyChangeProvider.of<PropertyChangeNotifier>(context,
+                listen: false);
             return BuildDetector(listener);
           },
         ),
@@ -232,7 +247,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('does not rebuild when listen is false and notifyListeners() is called with a property',
+    testWidgets(
+        'does not rebuild when listen is false and notifyListeners() is called with a property',
         (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 1);
@@ -240,7 +256,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            PropertyChangeProvider.of<PropertyChangeNotifier>(context, listen: false);
+            PropertyChangeProvider.of<PropertyChangeNotifier>(context,
+                listen: false);
             return BuildDetector(listener);
           },
         ),
@@ -257,7 +274,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            final provider = PropertyChangeProvider.of<PropertyChangeNotifier>(context);
+            final provider =
+                PropertyChangeProvider.of<PropertyChangeNotifier>(context);
             expect(provider.value, model);
             return Container();
           },
@@ -274,7 +292,9 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            final provider = PropertyChangeProvider.of<PropertyChangeNotifier>(context, listen: false);
+            final provider = PropertyChangeProvider.of<PropertyChangeNotifier>(
+                context,
+                listen: false);
             expect(provider.value, model);
             return Container();
           },
@@ -285,15 +305,19 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('can access changed properties when notifyListeners() called with a property', (tester) async {
+    testWidgets(
+        'can access changed properties when notifyListeners() called with a property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final property = 'foo';
       final widget = PropertyChangeProvider(
         value: model,
         child: Builder(
           builder: (context) {
-            final provider = PropertyChangeProvider.of<PropertyChangeNotifier>(context);
-            if (provider.properties.isNotEmpty) expect(provider.properties.contains(property), isTrue);
+            final provider =
+                PropertyChangeProvider.of<PropertyChangeNotifier>(context);
+            if (provider.properties.isNotEmpty)
+              expect(provider.properties.contains(property), isTrue);
             return Container();
           },
         ),
@@ -312,7 +336,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            PropertyChangeProvider.of<PropertyChangeNotifier>(context, properties: ['foo'], listen: false);
+            PropertyChangeProvider.of<PropertyChangeNotifier>(context,
+                properties: ['foo'], listen: false);
             return Container();
           },
         ),
@@ -322,14 +347,17 @@ void main() {
       expect(tester.takeException(), isAssertionError);
     });
 
-    testWidgets('does not rebuild when notifyListeners() is called without a property', (tester) async {
+    testWidgets(
+        'does not rebuild when notifyListeners() is called without a property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 1);
       final widget = PropertyChangeProvider(
         value: model,
         child: Builder(
           builder: (context) {
-            PropertyChangeProvider.of<PropertyChangeNotifier>(context, properties: ['foo']);
+            PropertyChangeProvider.of<PropertyChangeNotifier>(context,
+                properties: ['foo']);
             return BuildDetector(listener);
           },
         ),
@@ -340,14 +368,17 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('does not rebuild when notifyListeners() is called with a non-matching property', (tester) async {
+    testWidgets(
+        'does not rebuild when notifyListeners() is called with a non-matching property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 1);
       final widget = PropertyChangeProvider(
         value: model,
         child: Builder(
           builder: (context) {
-            PropertyChangeProvider.of<PropertyChangeNotifier>(context, properties: ['foo']);
+            PropertyChangeProvider.of<PropertyChangeNotifier>(context,
+                properties: ['foo']);
             return BuildDetector(listener);
           },
         ),
@@ -358,7 +389,9 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('rebuilds when notifyListeners() is called with a matching property', (tester) async {
+    testWidgets(
+        'rebuilds when notifyListeners() is called with a matching property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final property = 'foo';
       final listener = expectAsync0(() {}, count: 2);
@@ -366,7 +399,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            PropertyChangeProvider.of<PropertyChangeNotifier>(context, properties: [property]);
+            PropertyChangeProvider.of<PropertyChangeNotifier>(context,
+                properties: [property]);
             return BuildDetector(listener);
           },
         ),
@@ -377,14 +411,17 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('rebuilds when notifyListeners() is called multiple times with the first property matching', (tester) async {
+    testWidgets(
+        'rebuilds when notifyListeners() is called multiple times with the first property matching',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 2);
       final widget = PropertyChangeProvider(
         value: model,
         child: Builder(
           builder: (context) {
-            PropertyChangeProvider.of<PropertyChangeNotifier>(context, properties: ['foo']);
+            PropertyChangeProvider.of<PropertyChangeNotifier>(context,
+                properties: ['foo']);
             return BuildDetector(listener);
           },
         ),
@@ -396,14 +433,17 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('rebuilds when notifyListeners() is called multiple times with the last property matching', (tester) async {
+    testWidgets(
+        'rebuilds when notifyListeners() is called multiple times with the last property matching',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync0(() {}, count: 2);
       final widget = PropertyChangeProvider(
         value: model,
         child: Builder(
           builder: (context) {
-            PropertyChangeProvider.of<PropertyChangeNotifier>(context, properties: ['bar']);
+            PropertyChangeProvider.of<PropertyChangeNotifier>(context,
+                properties: ['bar']);
             return BuildDetector(listener);
           },
         ),
@@ -421,7 +461,9 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            final provider = PropertyChangeProvider.of<PropertyChangeNotifier>(context, properties: ['foo']);
+            final provider = PropertyChangeProvider.of<PropertyChangeNotifier>(
+                context,
+                properties: ['foo']);
             expect(provider.value, model);
             return Container();
           },
@@ -432,15 +474,20 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('can access changed property when notifyListeners() called with a matching property', (tester) async {
+    testWidgets(
+        'can access changed property when notifyListeners() called with a matching property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final property = 'foo';
       final widget = PropertyChangeProvider(
         value: model,
         child: Builder(
           builder: (context) {
-            final provider = PropertyChangeProvider.of<PropertyChangeNotifier>(context, properties: [property]);
-            if (provider.properties.isNotEmpty) expect(provider.properties.contains(property), isTrue);
+            final provider = PropertyChangeProvider.of<PropertyChangeNotifier>(
+                context,
+                properties: [property]);
+            if (provider.properties.isNotEmpty)
+              expect(provider.properties.contains(property), isTrue);
             return Container();
           },
         ),

@@ -32,13 +32,13 @@ typedef PropertyChangeBuilder<T> = Widget Function(BuildContext, T, Set<Object>)
 ///  );
 /// ```
 class PropertyChangeConsumer<T extends PropertyChangeNotifier> extends StatelessWidget {
-  final Iterable<Object> properties;
+  final Iterable<Object>? properties;
   final PropertyChangeBuilder<T> builder;
 
   const PropertyChangeConsumer({
-    Key key,
+    Key? key,
     this.properties,
-    @required this.builder,
+    required this.builder,
   })  : assert(builder != null),
         super(key: key);
 

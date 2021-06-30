@@ -5,15 +5,19 @@ import 'package:property_change_notifier/property_change_notifier.dart';
 void main() {
   testWidgets('throws assertion error if child is null', (tester) async {
     final widget = Builder(builder: (context) {
-      return PropertyChangeConsumer<PropertyChangeNotifier>(builder: null);
+      return PropertyChangeConsumer<PropertyChangeNotifier>(
+          builder: (_, __, ___) => Container());
     });
     await tester.pumpWidget(widget);
     expect(tester.takeException(), isAssertionError);
   });
 
-  testWidgets('throws assertion error if ancestor PropertyChangeProvider not found', (tester) async {
+  testWidgets(
+      'throws assertion error if ancestor PropertyChangeProvider not found',
+      (tester) async {
     final widget = Builder(builder: (context) {
-      return PropertyChangeConsumer<PropertyChangeNotifier>(builder: (context, model, properties) {
+      return PropertyChangeConsumer<PropertyChangeNotifier>(
+          builder: (context, model, properties) {
         return Container();
       });
     });
@@ -22,7 +26,9 @@ void main() {
   });
 
   group('consumer without properties', () {
-    testWidgets('is rebuilt when notifyListeners() is called without a property', (tester) async {
+    testWidgets(
+        'is rebuilt when notifyListeners() is called without a property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync3((context, model, properties) {
         return Container();
@@ -31,7 +37,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            return PropertyChangeConsumer<PropertyChangeNotifier>(builder: listener);
+            return PropertyChangeConsumer<PropertyChangeNotifier>(
+                builder: listener);
           },
         ),
       );
@@ -40,7 +47,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('is rebuilt when notifyListeners() is called with a property', (tester) async {
+    testWidgets('is rebuilt when notifyListeners() is called with a property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync3((context, model, properties) {
         return Container();
@@ -49,7 +57,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            return PropertyChangeConsumer<PropertyChangeNotifier>(builder: listener);
+            return PropertyChangeConsumer<PropertyChangeNotifier>(
+                builder: listener);
           },
         ),
       );
@@ -68,7 +77,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            return PropertyChangeConsumer<PropertyChangeNotifier>(builder: listener);
+            return PropertyChangeConsumer<PropertyChangeNotifier>(
+                builder: listener);
           },
         ),
       );
@@ -79,14 +89,17 @@ void main() {
       final model = PropertyChangeNotifier();
       final property = 'foo';
       final listener = expectAsync3((context, model, properties) {
-        if (properties.isNotEmpty) expect(properties.contains(property), isTrue);
+        if (properties is List<String> && properties.isNotEmpty) {
+          expect(properties.contains(property), isTrue);
+        }
         return Container();
       }, count: 2);
       final widget = PropertyChangeProvider(
         value: model,
         child: Builder(
           builder: (context) {
-            return PropertyChangeConsumer<PropertyChangeNotifier>(builder: listener);
+            return PropertyChangeConsumer<PropertyChangeNotifier>(
+                builder: listener);
           },
         ),
       );
@@ -97,7 +110,9 @@ void main() {
   });
 
   group('consumer with properties', () {
-    testWidgets('is not rebuilt when notifyListeners() is called without a property', (tester) async {
+    testWidgets(
+        'is not rebuilt when notifyListeners() is called without a property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync3((context, model, properties) {
         return Container();
@@ -106,7 +121,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            return PropertyChangeConsumer<PropertyChangeNotifier>(properties: ['foo'], builder: listener);
+            return PropertyChangeConsumer<PropertyChangeNotifier>(
+                properties: ['foo'], builder: listener);
           },
         ),
       );
@@ -115,7 +131,9 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('is not rebuilt when notifyListeners() is called with a non-matching property', (tester) async {
+    testWidgets(
+        'is not rebuilt when notifyListeners() is called with a non-matching property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final listener = expectAsync3((context, model, properties) {
         return Container();
@@ -124,7 +142,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            return PropertyChangeConsumer<PropertyChangeNotifier>(properties: ['foo'], builder: listener);
+            return PropertyChangeConsumer<PropertyChangeNotifier>(
+                properties: ['foo'], builder: listener);
           },
         ),
       );
@@ -133,7 +152,9 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('is rebuilt when notifyListeners() is called with a matching property', (tester) async {
+    testWidgets(
+        'is rebuilt when notifyListeners() is called with a matching property',
+        (tester) async {
       final model = PropertyChangeNotifier();
       final property = 'foo';
       final listener = expectAsync3((context, model, properties) {
@@ -143,7 +164,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            return PropertyChangeConsumer<PropertyChangeNotifier>(properties: [property], builder: listener);
+            return PropertyChangeConsumer<PropertyChangeNotifier>(
+                properties: [property], builder: listener);
           },
         ),
       );
@@ -162,7 +184,8 @@ void main() {
         value: model,
         child: Builder(
           builder: (context) {
-            return PropertyChangeConsumer<PropertyChangeNotifier>(properties: ['foo'], builder: listener);
+            return PropertyChangeConsumer<PropertyChangeNotifier>(
+                properties: ['foo'], builder: listener);
           },
         ),
       );
@@ -173,14 +196,17 @@ void main() {
       final model = PropertyChangeNotifier();
       final property = 'foo';
       final listener = expectAsync3((context, model, properties) {
-        if (properties.isNotEmpty) expect(properties.contains(property), isTrue);
+        if (properties is List<String> && properties.isNotEmpty) {
+          expect(properties.contains(property), isTrue);
+        }
         return Container();
       }, count: 2);
       final widget = PropertyChangeProvider(
         value: model,
         child: Builder(
           builder: (context) {
-            return PropertyChangeConsumer<PropertyChangeNotifier>(properties: [property], builder: listener);
+            return PropertyChangeConsumer<PropertyChangeNotifier>(
+                properties: [property], builder: listener);
           },
         ),
       );
